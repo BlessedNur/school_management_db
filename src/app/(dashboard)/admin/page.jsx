@@ -129,6 +129,8 @@ function Page() {
       const data = await response.json();
 
       if (response.status === 400) {
+        setIsLoading(false);
+
         const {
           alreadyEnrolledStudents = [],
           alreadyEnrolledInstructors = [],
@@ -160,15 +162,18 @@ function Page() {
       }
 
       if (response.ok) {
+        setIsLoading(false);
         toast.success("Enrollment successful");
         setSelectedStudents([]);
         setPopUp((prev) => ({ ...prev, enroll_pop: false }));
         setSelectedInstructors([]);
       } else {
+        setIsLoading(false);
         toast.error("Enrollment failed. Please try again.");
       }
     } catch (error) {
       console.error("Error enrolling:", error);
+      setIsLoading(false);
       toast.error("Error enrolling users. Please try again.");
     } finally {
       setIsLoading(false);
@@ -243,10 +248,12 @@ function Page() {
         setPopUp((prev) => ({ ...prev, course_pop: false }));
       }
       if (response.status === 400) {
+        setIsLoading(false);
         toast.error("wrong information");
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       toast.error("error occured");
     }
   };
@@ -499,7 +506,7 @@ function Page() {
                     onClick={addUser}
                     className="p-4 bg-green-700 text-white rounded-sm"
                   >
-                    {isLoading ? "..Adding" : "Add"}
+                    {isLoading ? "Adding..." : "Add"}
                   </button>
                 </div>
                 <div className="w-1/2 flex flex-col gap-4">
@@ -580,7 +587,7 @@ function Page() {
                     onClick={addCourse}
                     className="p-4 bg-green-700 text-white rounded-sm"
                   >
-                    Add
+                    {isLoading ? "Adding..." : "Add"}
                   </button>
                 </div>
                 <div className="w-1/2 flex flex-col gap-4">
@@ -731,7 +738,7 @@ function Page() {
                     }
                     className="inline-flex justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Enroll Selected
+                    {isLoading ? "Enrolling..." : "Enroll Selected"}
                   </button>
                 </div>
               </div>
