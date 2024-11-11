@@ -3,7 +3,7 @@ import { authProvider } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 
-function page() {
+function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -125,4 +125,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
