@@ -16,7 +16,7 @@ function Page() {
   const [products, setProducts] = useState([]);
   const path = useRouter();
 
-  const [
+  const {
     token,
     setToken,
     currentUser,
@@ -25,11 +25,11 @@ function Page() {
     setDarkMode,
     active,
     SetActive,
-    setPopUp,
+    setPopUp2,
     popUp_enroll_pop,
     popUp_course_pop,
     popUp_user_pop,
-  ] = useContext(authProvider);
+   } = useContext(authProvider);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");

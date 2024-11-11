@@ -9,8 +9,20 @@ function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [token, setToken, currentUser, setCurrentUser] =
-    useContext(authProvider);
+  const {
+    token,
+    setToken,
+    currentUser,
+    setCurrentUser,
+    darkMode,
+    setDarkMode,
+    active,
+    SetActive,
+    setPopUp2,
+    popUp_enroll_pop,
+    popUp_course_pop,
+    popUp_user_pop,
+   } = useContext(authProvider);
   console.log(token);
   console.log(currentUser);
   const path = useRouter();

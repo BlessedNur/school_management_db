@@ -10,9 +10,20 @@ function Page() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
-
-  const [token, setToken, currentUser, setCurrentUser] =
-    useContext(authProvider);
+  const {
+    token,
+    setToken,
+    currentUser,
+    setCurrentUser,
+    darkMode,
+    setDarkMode,
+    active,
+    SetActive,
+    setPopUp2,
+    popUp_enroll_pop,
+    popUp_course_pop,
+    popUp_user_pop,
+   } = useContext(authProvider);
   const path = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();

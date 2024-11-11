@@ -12,7 +12,7 @@ function Students() {
     studentId: null,
   });
 
-  const [
+  const {
     token,
     setToken,
     currentUser,
@@ -25,7 +25,7 @@ function Students() {
     popUp_enroll_pop,
     popUp_course_pop,
     popUp_user_pop,
-  ] = useContext(authProvider);
+   } = useContext(authProvider);
 
   const [students, setStudents] = useState([]);
   const [enrolled, setEnrolled] = useState([]);

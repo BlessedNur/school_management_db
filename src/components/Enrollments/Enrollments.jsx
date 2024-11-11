@@ -14,7 +14,7 @@ function Enrollments() {
     delete_pop: false,
   });
 
-  const [
+  const {
     token,
     setToken,
     currentUser,
@@ -27,7 +27,7 @@ function Enrollments() {
     popUp_enroll_pop,
     popUp_course_pop,
     popUp_user_pop,
-  ] = useContext(authProvider);
+   } = useContext(authProvider);
 
   const getCourses = async () => {
     try {

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import React, { createContext, useState, useEffect } from "react";
 
 export const authProvider = createContext();
 
 function AuthContext({ children }) {
   const [darkMode, setDarkMode] = useState(false);
-  const [active, SetActive] = useState("instructor");
+  const [active, setActive] = useState("instructor");
 
   const [popUp, setPopUp] = useState({
     user_pop: false,
@@ -19,9 +19,7 @@ function AuthContext({ children }) {
 
   useEffect(() => {
     try {
-      // const storedToken = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
-      // if (storedToken) setToken(storedToken);
       if (storedUser) setCurrentUser(storedUser);
     } catch (error) {
       console.error("Error accessing localStorage:", error);
@@ -30,7 +28,7 @@ function AuthContext({ children }) {
 
   return (
     <authProvider.Provider
-      value={[
+      value={{
         token,
         setToken,
         currentUser,
@@ -38,12 +36,10 @@ function AuthContext({ children }) {
         darkMode,
         setDarkMode,
         active,
-        SetActive,
+        setActive,
         setPopUp,
-        popUp.enroll_pop,
-        popUp.course_pop,
-        popUp.user_pop,
-      ]}
+        popUp,
+      }}
     >
       {children}
     </authProvider.Provider>

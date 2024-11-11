@@ -14,7 +14,6 @@ function Page() {
     newOtpCode[index] = value;
     setOtpCode(newOtpCode);
 
-    // Automatically focus the next input if a number is entered
     if (value && index < 5) {
       document.getElementById(`otp-input-${index + 1}`).focus();
     }
