@@ -1,15 +1,30 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { authProvider } from "@/context/AuthContext";
 
 function Page() {
   const router = useRouter();
   const [otpCode, setOtpCode] = useState(Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    token,
+    setToken,
+    currentUser,
+    setCurrentUser,
+    darkMode,
+    setDarkMode,
+    active,
+    SetActive,
+    setPopUp2,
+    popUp_enroll_pop,
+    popUp_course_pop,
+    popUp_user_pop,
+  } = useContext(authProvider);
 
   const handleChange = (e, index) => {
-    const value = e.target.value.slice(0, 1); // Ensure only one character per box
+    const value = e.target.value.slice(0, 1); 
     const newOtpCode = [...otpCode];
     newOtpCode[index] = value;
     setOtpCode(newOtpCode);
@@ -28,9 +43,9 @@ function Page() {
 
   useEffect(() => {
     if (isMounted && token) {
-      path.push("/admin");
+      router.push("/admin");
     }
-  }, [isMounted, token, path]);
+  }, [isMounted, token, router]);
 
   const handleSubmit = async () => {
     try {

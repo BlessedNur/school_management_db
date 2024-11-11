@@ -1,13 +1,28 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext ,useEffect, useState } from "react";
 import { toast } from "sonner";
+import { authProvider } from "@/context/AuthContext";
 
 function Page() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const path = useRouter();
+  const {
+    token,
+    setToken,
+    currentUser,
+    setCurrentUser,
+    darkMode,
+    setDarkMode,
+    active,
+    SetActive,
+    setPopUp2,
+    popUp_enroll_pop,
+    popUp_course_pop,
+    popUp_user_pop,
+   } = useContext(authProvider);
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {

@@ -46,19 +46,6 @@ function Page({ params: paramsPromise }) {
       setIsLoading(false);
     }
   };
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-  }, []);
-
-  useEffect(() => {
-    if (isMounted && token) {
-      path.push("/admin");
-    }
-  }, [isMounted, token, path]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#fefbfb] relative">
