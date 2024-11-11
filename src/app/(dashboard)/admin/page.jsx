@@ -71,7 +71,7 @@ function Page() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       try {
         const response = await fetch(
           "https://school-management-db-backend.onrender.com/api/users/get_users",
@@ -242,6 +242,8 @@ function Page() {
         }
       );
       if (response.ok) {
+        setDuration("");
+        setCategory("");
         setIsLoading(false);
         toast.success("Course created succesfully");
 
@@ -599,6 +601,7 @@ function Page() {
                       id="course-category"
                       className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
+                      <option value="" disabled defaultValue={""}>select a course</option>
                       <option value="Web development">Web Development</option>
                       <option value="Cyber security">Cyber Security</option>
                       <option value="Graphic design">Graphic Design</option>
