@@ -27,6 +27,10 @@ function Page() {
     setActive,
     setPopUp,
     popUp,
+    selectedCourse,
+    setSelectedCourse,
+    selectedCourseName,
+    setSelectedCourseName,
   } = useContext(authProvider);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +42,7 @@ function Page() {
   const [students, setStudents] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
+
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
 
@@ -631,15 +635,10 @@ function Page() {
                   </label>
                   <select
                     id="course-select"
-                    onChange={(e) => setSelectedCourse(e.target.value)}
+                    // onChange={(e) => setSelectedCourse(e.target.value)}
                     className="w-full rounded-md border border-gray-300 p-2 shadow-sm outline-none focus:border-indigo-500 focus:ring-indigo-500"
                   >
-                    <option value="">Select a course</option>
-                    {courses.map((course) => (
-                      <option key={course._id} value={course._id}>
-                        {course.category}
-                      </option>
-                    ))}
+                    <option value="">{selectedCourseName}</option>
                   </select>
                 </div>
 

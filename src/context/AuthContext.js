@@ -7,7 +7,8 @@ export const authProvider = createContext();
 function AuthContext({ children }) {
   const [darkMode, setDarkMode] = useState(false);
   const [active, setActive] = useState("instructor");
-
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedCourseName, setSelectedCourseName] = useState("");
   const [popUp, setPopUp] = useState({
     user_pop: false,
     course_pop: false,
@@ -40,6 +41,10 @@ function AuthContext({ children }) {
         setActive,
         setPopUp,
         popUp,
+        selectedCourse,
+        setSelectedCourse,
+        selectedCourseName,
+        setSelectedCourseName,
       }}
     >
       {children}

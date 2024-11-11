@@ -25,6 +25,10 @@ function Enrollments() {
     setActive,
     setPopUp,
     popUp,
+    selectedCourse,
+    setSelectedCourse,
+    selectedCourseName,
+    setSelectedCourseName,
   } = useContext(authProvider);
 
   const getCourses = async () => {
@@ -155,9 +159,11 @@ function Enrollments() {
                   <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
                     <div
                       className="cursor-pointer flex items-center gap-2 bg-cyan-700 p-2 rounded-md text-[10px] text-white"
-                      onClick={() =>
-                        setPopUp((prev) => ({ ...prev, enroll_pop: true }))
-                      }
+                      onClick={() => {
+                        setPopUp((prev) => ({ ...prev, enroll_pop: true }));
+                        setSelectedCourse(course._id);
+                        setSelectedCourseName(course.category)
+                      }}
                     >
                       <i className="fa fa-plus" aria-hidden="true"></i>
                       <p>Enroll</p>
