@@ -50,7 +50,7 @@ function Page() {
     const getCourses = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/courses/get_course",
+          "https://school-management-db-backend.onrender.com/api/courses/get_course",
           {
             method: "GET",
           }
@@ -74,7 +74,7 @@ function Page() {
       setIsLoading(true);
       try {
         const response = await fetch(
-          "http://localhost:3001/api/users/get_users",
+          "https://school-management-db-backend.onrender.com/api/users/get_users",
           {
             method: "GET",
             headers: {
@@ -111,17 +111,20 @@ function Page() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3001/api/courses/enroll", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          courseId: selectedCourse,
-          studentIds: selectedStudents,
-          instructorIds: selectedInstructors,
-        }),
-      });
+      const response = await fetch(
+        "https://school-management-db-backend.onrender.com/api/courses/enroll",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            courseId: selectedCourse,
+            studentIds: selectedStudents,
+            instructorIds: selectedInstructors,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -182,18 +185,21 @@ function Page() {
       enrollmentDate: dateNow,
     });
     try {
-      const response = await fetch("http://localhost:3001/api/users/add_user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          role: role,
-          enrollmentDate: dateNow,
-        }),
-      });
+      const response = await fetch(
+        "https://school-management-db-backend.onrender.com/api/users/add_user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            role: role,
+            enrollmentDate: dateNow,
+          }),
+        }
+      );
       if (response.ok) {
         setName("");
         setEmail("");
@@ -218,7 +224,7 @@ function Page() {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/courses/add_course",
+        "https://school-management-db-backend.onrender.com/api/courses/add_course",
         {
           method: "POST",
           headers: {

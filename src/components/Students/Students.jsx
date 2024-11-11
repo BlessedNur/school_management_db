@@ -24,6 +24,7 @@ function Students() {
     setPopUp,
     popUp,
   } = useContext(authProvider);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [students, setStudents] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
@@ -31,7 +32,7 @@ function Students() {
   const getCourses = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3001/api/courses/get_course",
+        "https://school-management-db-backend.onrender.com/api/courses/get_course",
         {
           method: "GET",
         }
@@ -48,18 +49,27 @@ function Students() {
   };
 
   const getStudents = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/users/students", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://school-management-db-backend.onrender.com/api/users/students",
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
+        setIsLoading(false);
+
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
       setStudents(data);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
+
       console.error("Error fetching students:", error);
     }
   };
@@ -67,7 +77,7 @@ function Students() {
   const deleteStudent = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/users/students/${id}`,
+        `https://school-management-db-backend.onrender.com/api/users/students/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -108,105 +118,114 @@ function Students() {
             darkMode ? "bg-gray-900" : "bg-white"
           } rounded-sm h-full w-full`}
         >
-          <table className="w-full">
-            <thead>
-              <tr className="flex text-gray-500 justify-between">
-                <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
-                  Profile
-                </th>
-                <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
-                  StudentID
-                </th>
-                <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
-                  Enroll Date
-                </th>
-                <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
-                  Course
-                </th>
-                <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
-                  Email
-                </th>
-                <th className="p-3 w-full text-left border-b-[1px]">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => {
-                const studentCourses = enrolled
-                  .filter((course) =>
-                    course.enrolledStudents.includes(student._id)
-                  )
-                  .map((course) => course.category);
+          {isLoading ? (
+            <div className="w-full h-full flex justify-center items-center gap-4">
+              <div className="loader w-8 h-8 border-4 border-[#000] rounded-full"></div>
+              <h4 className="font-semibold">Please wait...</h4>
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="flex text-gray-500 justify-between">
+                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                    Profile
+                  </th>
+                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                    StudentID
+                  </th>
+                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                    Enroll Date
+                  </th>
+                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                    Course
+                  </th>
+                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                    Email
+                  </th>
+                  <th className="p-3 w-full text-left border-b-[1px]">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => {
+                  const studentCourses = enrolled
+                    .filter((course) =>
+                      course.enrolledStudents.includes(student._id)
+                    )
+                    .map((course) => course.category);
 
-                return (
-                  <tr key={student._id} className="flex justify-between">
-                    <td className="p-3 w-full border-b-[1px] border-r-[1px] flex items-center gap-3 capitalize">
-                      <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden">
-                        <img
-                          src={
-                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                          }
-                          width={"100%"}
-                          height={"100%"}
-                        />
-                      </div>
-                      <div>
-                        {popUp2.delete_pop &&
-                          popUp2.studentId === student._id && (
-                            <DeleteAlert
-                              function_call={deleteStudent}
-                              id={student._id}
-                              role={student.role}
-                              user={student.name}
-                              setPopup={setPopUp2}
-                              delete_pop={popUp2.delete_pop}
-                            />
-                          )}
-                        <h2>{student.name}</h2>
-                        <p className="text-[10px] text-gray-400">Student</p>
-                      </div>
-                    </td>
-                    <td className="overflow-hidden flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px]">
-                      {student._id.slice(0, 15)}...
-                    </td>
-                    <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                      {new Date(student.enrollmentDate).toLocaleDateString()}
-                    </td>
-                    <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                      {studentCourses.length > 0
-                        ? studentCourses.join(", ")
-                        : "No courses assigned"}
-                    </td>
-                    <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                      {student.email}
-                    </td>
-                    <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
-                      <div
-                        className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
-                        onClick={() => copyToClipboard(student._id)}
-                      >
-                        <i className="fa fa-copy" aria-hidden="true"></i>
-                        <p>Copy ID</p>
-                      </div>
+                  return (
+                    <tr key={student._id} className="flex justify-between">
+                      <td className="p-3 w-full border-b-[1px] border-r-[1px] flex items-center gap-3 capitalize">
+                        <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden">
+                          <img
+                            src={
+                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                            }
+                            width={"100%"}
+                            height={"100%"}
+                          />
+                        </div>
+                        <div>
+                          {popUp2.delete_pop &&
+                            popUp2.studentId === student._id && (
+                              <DeleteAlert
+                                function_call={deleteStudent}
+                                id={student._id}
+                                role={student.role}
+                                user={student.name}
+                                setPopup={setPopUp2}
+                                delete_pop={popUp2.delete_pop}
+                              />
+                            )}
+                          <h2>{student.name}</h2>
+                          <p className="text-[10px] text-gray-400">Student</p>
+                        </div>
+                      </td>
+                      <td className="overflow-hidden flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px]">
+                        {student._id.slice(0, 15)}...
+                      </td>
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {new Date(student.enrollmentDate).toLocaleDateString()}
+                      </td>
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {studentCourses.length > 0
+                          ? studentCourses.join(", ")
+                          : "No courses assigned"}
+                      </td>
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {student.email}
+                      </td>
+                      <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
+                        <div
+                          className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
+                          onClick={() => copyToClipboard(student._id)}
+                        >
+                          <i className="fa fa-copy" aria-hidden="true"></i>
+                          <p>Copy ID</p>
+                        </div>
 
-                      <div
-                        onClick={() => {
-                          setPopUp2((prev) => ({
-                            ...prev,
-                            delete_pop: true,
-                            studentId: student._id,
-                          }));
-                        }}
-                        className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
-                      >
-                        <i className="fa fa-trash" aria-hidden="true"></i>
-                        <p>Delete</p>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                        <div
+                          onClick={() => {
+                            setPopUp2((prev) => ({
+                              ...prev,
+                              delete_pop: true,
+                              studentId: student._id,
+                            }));
+                          }}
+                          className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
+                        >
+                          <i className="fa fa-trash" aria-hidden="true"></i>
+                          <p>Delete</p>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
         <Pagination />
       </div>
