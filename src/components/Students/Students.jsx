@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import DeleteAlert from "../deleteAlert/DeleteAlert";
 import Pagination from "../pagination/Pagination";
+import moment from "moment";
 
 function Students() {
   const [popUp2, setPopUp2] = useState({
@@ -187,8 +188,14 @@ function Students() {
                         {student._id.slice(0, 15)}...
                       </td>
                       <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                        {new Date(student.enrollmentDate).toLocaleDateString()}
+                        <h2>
+                          {moment(student.enrollmentDate).format("MM/DD/YYYY")}
+                        </h2>
+                        <p className="text-[10px] text-gray-400">
+                          {moment(student.createdAt).fromNow()}{" "}
+                        </p>
                       </td>
+
                       <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
                         {studentCourses.length > 0
                           ? studentCourses.join(", ")
