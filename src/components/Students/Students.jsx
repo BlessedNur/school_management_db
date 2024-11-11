@@ -7,7 +7,7 @@ import DeleteAlert from "../deleteAlert/DeleteAlert";
 import Pagination from "../pagination/Pagination";
 
 function Students() {
-  const [popUp, setPopUp] = useState({
+  const [popUp2, setPopUp2] = useState({
     delete_pop: false,
     studentId: null,
   });
@@ -20,12 +20,10 @@ function Students() {
     darkMode,
     setDarkMode,
     active,
-    SetActive,
-    setPopUp2,
-    popUp_enroll_pop,
-    popUp_course_pop,
-    popUp_user_pop,
-   } = useContext(authProvider);
+    setActive,
+    setPopUp,
+    popUp,
+  } = useContext(authProvider);
 
   const [students, setStudents] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
@@ -94,7 +92,7 @@ function Students() {
   useEffect(() => {
     getStudents();
     getCourses();
-  }, [popUp_user_pop]);
+  }, [popUp.user_pop]);
 
   const copyToClipboard = (id) => {
     navigator.clipboard.writeText(id).then(() => {
@@ -152,6 +150,17 @@ function Students() {
                         />
                       </div>
                       <div>
+                        {popUp2.delete_pop &&
+                          popUp2.studentId === student._id && (
+                            <DeleteAlert
+                              function_call={deleteStudent}
+                              id={student._id}
+                              role={student.role}
+                              user={student.name}
+                              setPopup={setPopUp2}
+                              delete_pop={popUp2.delete_pop}
+                            />
+                          )}
                         <h2>{student.name}</h2>
                         <p className="text-[10px] text-gray-400">Student</p>
                       </div>
@@ -172,25 +181,16 @@ function Students() {
                     </td>
                     <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
                       <div
-                        className="flex items-center gap-2 bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
+                        className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
                         onClick={() => copyToClipboard(student._id)}
                       >
                         <i className="fa fa-copy" aria-hidden="true"></i>
                         <p>Copy ID</p>
                       </div>
-                      {popUp.delete_pop && popUp.studentId === student._id && (
-                        <DeleteAlert
-                          function_call={deleteStudent}
-                          id={student._id}
-                          role={student.role}
-                          user={student.name}
-                          setPopup={setPopUp}
-                          delete_pop={popUp.delete_pop}
-                        />
-                      )}
+
                       <div
                         onClick={() => {
-                          setPopUp((prev) => ({
+                          setPopUp2((prev) => ({
                             ...prev,
                             delete_pop: true,
                             studentId: student._id,

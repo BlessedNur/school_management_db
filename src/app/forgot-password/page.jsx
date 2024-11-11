@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useContext ,useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { authProvider } from "@/context/AuthContext";
 
@@ -17,12 +17,10 @@ function Page() {
     darkMode,
     setDarkMode,
     active,
-    SetActive,
-    setPopUp2,
-    popUp_enroll_pop,
-    popUp_course_pop,
-    popUp_user_pop,
-   } = useContext(authProvider);
+    setActive,
+    setPopUp,
+    popUp,
+  } = useContext(authProvider);
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {

@@ -11,7 +11,7 @@ function Courses() {
   const [enrolledInstructor, setEnrolledInstructor] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
 
-  const [
+  const {
     token,
     setToken,
     currentUser,
@@ -20,7 +20,9 @@ function Courses() {
     setDarkMode,
     active,
     setActive,
-  ] = useContext(authProvider);
+    setPopUp2,
+    popUp2,
+  } = useContext(authProvider);
   const [instructors, setInstructors] = useState([]);
 
   const getCourses = async () => {

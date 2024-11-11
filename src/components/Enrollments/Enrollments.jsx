@@ -10,7 +10,7 @@ function Enrollments() {
   const [instructors, setInstructors] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
 
-  const [popUp, setPopUp] = useState({
+  const [popUp2, setPopUp2] = useState({
     delete_pop: false,
   });
 
@@ -22,12 +22,10 @@ function Enrollments() {
     darkMode,
     setDarkMode,
     active,
-    SetActive,
-    setPopUp2,
-    popUp_enroll_pop,
-    popUp_course_pop,
-    popUp_user_pop,
-   } = useContext(authProvider);
+    setActive,
+    setPopUp,
+    popUp,
+  } = useContext(authProvider);
 
   const getCourses = async () => {
     try {
@@ -91,18 +89,18 @@ function Enrollments() {
     } catch (error) {
       console.error("Error deleting Course:", error);
     } finally {
-      setPopUp({ delete_pop: false, courseId: null });
+      setPopUp2({ delete_pop: false, courseId: null });
     }
   };
 
   useEffect(() => {
     getCourses();
     getUsers();
-  }, [popUp_enroll_pop]);
+  }, [popUp.enroll_pop]);
 
   useEffect(() => {
     getCourses();
-  }, [popUp_course_pop]);
+  }, [popUp.course_pop]);
 
   useEffect(() => {
     const enrolledInstructorIds = courseList.flatMap(
@@ -158,25 +156,25 @@ function Enrollments() {
                     <div
                       className="cursor-pointer flex items-center gap-2 bg-cyan-700 p-2 rounded-md text-[10px] text-white"
                       onClick={() =>
-                        setPopUp2((prev) => ({ ...prev, enroll_pop: true }))
+                        setPopUp((prev) => ({ ...prev, enroll_pop: true }))
                       }
                     >
                       <i className="fa fa-plus" aria-hidden="true"></i>
                       <p>Enroll</p>
                     </div>
-                    {popUp.delete_pop && popUp.courseId === course._id && (
+                    {popUp2.delete_pop && popUp2.courseId === course._id && (
                       <DeleteAlert
                         function_call={deleteCourse}
                         id={course._id}
                         role={"course"}
                         user={course.category}
-                        setPopup={setPopUp}
-                        delete_pop={popUp.delete_pop}
+                        setPopup={setPopUp2}
+                        delete_pop={popUp2.delete_pop}
                       />
                     )}
                     <div
                       onClick={() =>
-                        setPopUp({ delete_pop: true, courseId: course._id })
+                        setPopUp2({ delete_pop: true, courseId: course._id })
                       }
                       className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
                     >

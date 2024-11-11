@@ -18,12 +18,10 @@ function Page() {
     darkMode,
     setDarkMode,
     active,
-    SetActive,
-    setPopUp2,
-    popUp_enroll_pop,
-    popUp_course_pop,
-    popUp_user_pop,
-   } = useContext(authProvider);
+    setActive,
+    setPopUp,
+    popUp,
+  } = useContext(authProvider);
   const path = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -5,7 +5,7 @@ import DeleteAlert from "../deleteAlert/DeleteAlert";
 import Pagination from "../pagination/Pagination";
 
 function Instructors() {
-  const [popUp, setPopUp] = useState({
+  const [popUp2, setPopUp2] = useState({
     delete_pop: false,
     instructorId: null,
   });
@@ -18,12 +18,10 @@ function Instructors() {
     darkMode,
     setDarkMode,
     active,
-    SetActive,
-    setPopUp2,
-    popUp_enroll_pop,
-    popUp_course_pop,
-    popUp_user_pop,
-   } = useContext(authProvider);
+    setActive,
+    setPopUp,
+    popUp,
+  } = useContext(authProvider);
 
   const [instructors, setInstructors] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
@@ -70,7 +68,7 @@ function Instructors() {
   useEffect(() => {
     getInstructors();
     getCourses();
-  }, [popUp_user_pop]);
+  }, [popUp.user_pop]);
 
   const copyToClipboard = (id) => {
     navigator.clipboard.writeText(id).then(() => {
@@ -101,7 +99,7 @@ function Instructors() {
     } catch (error) {
       console.error("Error deleting instructor:", error);
     } finally {
-      setPopUp({ delete_pop: false, instructorId: null });
+      setPopUp2({ delete_pop: false, instructorId: null });
     }
   };
 
@@ -152,6 +150,17 @@ function Instructors() {
                         />
                       </div>
                       <div>
+                        {popUp2.delete_pop &&
+                          popUp2.instructorId === instructor._id && (
+                            <DeleteAlert
+                              function_call={deleteInstructor}
+                              id={instructor._id}
+                              role={instructor.role}
+                              user={instructor.name}
+                              setPopup={setPopUp2}
+                              delete_pop={popUp2.delete_pop}
+                            />
+                          )}
                         <h2>{instructor.name}</h2>
                         <p className="text-[10px] text-gray-400">Instructor</p>
                       </div>
@@ -169,7 +178,7 @@ function Instructors() {
                     </td>
                     <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
                       <div
-                        className="flex items-center gap-2 bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
+                        className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
                         onClick={() => copyToClipboard(instructor._id)}
                       >
                         <i className="fa fa-copy" aria-hidden="true"></i>
@@ -178,7 +187,7 @@ function Instructors() {
                       <div
                         className="flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white cursor-pointer"
                         onClick={() =>
-                          setPopUp({
+                          setPopUp2({
                             delete_pop: true,
                             instructorId: instructor._id,
                           })
@@ -187,17 +196,6 @@ function Instructors() {
                         <i className="fa fa-trash" aria-hidden="true"></i>
                         <p>Delete</p>
                       </div>
-                      {popUp.delete_pop &&
-                        popUp.instructorId === instructor._id && (
-                          <DeleteAlert
-                            function_call={deleteInstructor}
-                            id={instructor._id}
-                            role={instructor.role}
-                            user={instructor.name}
-                            setPopup={setPopUp}
-                            delete_pop={popUp.delete_pop}
-                          />
-                        )}
                     </td>
                   </tr>
                 );

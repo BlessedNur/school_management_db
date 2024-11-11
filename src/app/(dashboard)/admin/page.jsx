@@ -24,12 +24,10 @@ function Page() {
     darkMode,
     setDarkMode,
     active,
-    SetActive,
-    setPopUp2,
-    popUp_enroll_pop,
-    popUp_course_pop,
-    popUp_user_pop,
-   } = useContext(authProvider);
+    setActive,
+    setPopUp,
+    popUp,
+  } = useContext(authProvider);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
@@ -65,7 +63,7 @@ function Page() {
       }
     };
     getCourses();
-  }, [popUp_enroll_pop]);
+  }, [popUp.enroll_pop]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,7 +94,7 @@ function Page() {
     };
 
     fetchData();
-  }, [popUp_enroll_pop]);
+  }, [popUp.enroll_pop]);
 
   const toggleSelection = (id, list, setList) => {
     setList(
@@ -200,7 +198,7 @@ function Page() {
         toast.success(role + " created succesfully");
 
         setPopUp((prev) => ({ ...prev, user_pop: false }));
-        SetActive(role);
+        setActive(role);
       }
       if (response.status === 400) {
         toast.error("wrong credentials");
@@ -302,7 +300,7 @@ function Page() {
                   ? "bg-[#f7f8fa] text-black"
                   : "text-gray-600"
               } `}
-              onClick={() => SetActive("instructor")}
+              onClick={() => setActive("instructor")}
             >
               <i className="fa fa-graduation-cap" aria-hidden="true"></i>
               <p>Instructors</p>
@@ -313,7 +311,7 @@ function Page() {
                   ? "bg-[#f7f8fa] text-black"
                   : "text-gray-600"
               }`}
-              onClick={() => SetActive("student")}
+              onClick={() => setActive("student")}
             >
               <i className="fa fa-users" aria-hidden="true"></i> <p>Students</p>
             </li>
@@ -323,7 +321,7 @@ function Page() {
                   ? "bg-[#f7f8fa] text-black"
                   : "text-gray-600"
               }`}
-              onClick={() => SetActive("course")}
+              onClick={() => setActive("course")}
             >
               <i className="fa fa-book" aria-hidden="true"></i>
               <p>Courses</p>
@@ -334,7 +332,7 @@ function Page() {
                   ? "bg-[#f7f8fa] text-black"
                   : "text-gray-600"
               }`}
-              onClick={() => SetActive("enroll")}
+              onClick={() => setActive("enroll")}
             >
               <i className="fa fa-folder-open" aria-hidden="true"></i>
               <p>Course Enroll</p>
@@ -350,7 +348,7 @@ function Page() {
                   ? "bg-black text-gray-200"
                   : "text-gray-600"
               }`}
-              onClick={() => SetActive("setting")}
+              onClick={() => setActive("setting")}
             >
               <i className="fa-solid fa-gear"></i>
               <p>Settings</p>
@@ -367,7 +365,7 @@ function Page() {
                 active === "help" ? "bg-black text-gray-200" : "text-gray-600"
               }`}
               onClick={() => {
-                SetActive("help");
+                setActive("help");
                 navigate.back();
               }}
             >
@@ -436,7 +434,7 @@ function Page() {
         {active === "course" && <Courses />}
         {active === "enroll" && <Enrollments />}
 
-        {popUp_user_pop && (
+        {popUp.user_pop && (
           <div className="backdrop-blur-sm fixed top-0 left-0 h-screen w-screen grid place-content-center  ">
             <div
               className="fixed right-5 top-5 "
@@ -526,7 +524,7 @@ function Page() {
             </div>
           </div>
         )}
-        {popUp_course_pop && (
+        {popUp.course_pop && (
           <div className="backdrop-blur-sm fixed top-0 left-0 h-screen w-screen grid place-content-center  ">
             <div
               className="fixed right-5 top-5 "
@@ -584,11 +582,12 @@ function Page() {
                       id="course-category"
                       className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      {courses.map((course) => (
-                        <option key={course._id} value={course._id}>
-                          {course.category}
-                        </option>
-                      ))}
+                      <option value="Web development">Web Development</option>
+                      <option value="Cyber security">Cyber Security</option>
+                      <option value="Graphic design">Graphic Design</option>
+                      <option value="Digital marketing">
+                        Digital marketing
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -596,7 +595,7 @@ function Page() {
             </div>
           </div>
         )}
-        {popUp_enroll_pop && (
+        {popUp.enroll_pop && (
           <div
             className="fixed inset-0 z-10 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-50 transition-opacity"
             aria-labelledby="enroll-modal-title"
