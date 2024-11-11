@@ -631,15 +631,15 @@ function Page() {
                     htmlFor="course-select"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Select Course
+                    Course
                   </label>
-                  <select
+                  <div
                     id="course-select"
                     // onChange={(e) => setSelectedCourse(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 p-2 shadow-sm outline-none focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-full font-semibold rounded-md uppercase py-2 outline-none focus:border-indigo-500 focus:ring-indigo-500"
                   >
-                    <option value="">{selectedCourseName}</option>
-                  </select>
+                    {selectedCourseName}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
@@ -717,7 +717,12 @@ function Page() {
                   </button>
                   <button
                     onClick={handleEnroll}
-                    disabled={!selectedCourse}
+                    disabled={
+                      !(
+                        selectedInstructors.length > 0 ||
+                        selectedStudents.length > 0
+                      )
+                    }
                     className="inline-flex justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Enroll Selected
