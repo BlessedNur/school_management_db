@@ -915,25 +915,24 @@ function Page() {
                           >
                             <div className="text-sm capitalize text-gray-700">
                               <ul className="flex flex-col gap-2">
-                                {students.filter((student) =>
-                                  selectedCourse.enrolledStudents.includes(
-                                    student._id
-                                  )
-                                ).length > 0 ? (
-                                  students
-                                    .filter((student) =>
+                                {(() => {
+                                  const filteredStudents = students.filter(
+                                    (student) =>
                                       selectedCourse.enrolledStudents.includes(
                                         student._id
                                       )
-                                    )
-                                    .map((student) => (
+                                  );
+
+                                  return filteredStudents.length > 0 ? (
+                                    filteredStudents.map((student) => (
                                       <li className="p-2" key={student._id}>
                                         {student.name}
                                       </li>
                                     ))
-                                ) : (
-                                  <li>No Students assigned</li>
-                                )}
+                                  ) : (
+                                    <li>No Students assigned</li>
+                                  );
+                                })()}
                               </ul>
                             </div>
                           </li>
