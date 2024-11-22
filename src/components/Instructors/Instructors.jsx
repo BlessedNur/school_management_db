@@ -28,7 +28,7 @@ function Instructors() {
   const getCourses = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/courses/get_course",
+        "https://school-management-db-backend.onrender.com/api/courses/get_course",
         {
           method: "GET",
         }
@@ -50,7 +50,7 @@ function Instructors() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:4000/api/users/instructors",
+        "https://school-management-db-backend.onrender.com/api/users/instructors",
         {
           method: "GET",
         }
@@ -88,7 +88,7 @@ function Instructors() {
   const deleteInstructor = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/users/instructors/${id}`,
+        `https://school-management-db-backend.onrender.com/api/users/instructors/${id}`,
         {
           method: "DELETE",
           headers: {

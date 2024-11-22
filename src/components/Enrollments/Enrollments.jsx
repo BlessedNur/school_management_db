@@ -36,7 +36,7 @@ function Enrollments() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:4000/api/courses/get_course",
+        "https://school-management-db-backend.onrender.com/api/courses/get_course",
         {
           method: "GET",
         }
@@ -59,7 +59,7 @@ function Enrollments() {
   const getUsers = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/users/get_users",
+        "https://school-management-db-backend.onrender.com/api/users/get_users",
         {
           method: "GET",
           headers: {
@@ -81,12 +81,15 @@ function Enrollments() {
 
   const deleteCourse = async (id) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/courses/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `https://school-management-db-backend.onrender.com/api/courses/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         setCourseList((prevCourses) =>
           prevCourses.filter((course) => course._id !== id)

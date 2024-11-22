@@ -33,7 +33,7 @@ function Students() {
   const getCourses = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/courses/get_course",
+        "https://school-management-db-backend.onrender.com/api/courses/get_course",
         {
           method: "GET",
         }
@@ -52,9 +52,12 @@ function Students() {
   const getStudents = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/api/users/students", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://school-management-db-backend.onrender.com/api/users/students",
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
         setIsLoading(false);
@@ -75,7 +78,7 @@ function Students() {
   const deleteStudent = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/users/students/${id}`,
+        `https://school-management-db-backend.onrender.com/api/users/students/${id}`,
         {
           method: "DELETE",
           headers: {

@@ -53,13 +53,16 @@ function Home() {
     };
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await fetch(
+        "https://school-management-db-backend.onrender.com/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }
+      );
 
       const data = await response.json();
 
@@ -237,7 +240,7 @@ export default Home;
 
 //     try {
 //       const response = await fetch(
-//         "http://localhost:4000/api/auth/login",
+//         "https://school-management-db-backend.onrender.com/api/auth/login",
 //         {
 //           method: "POST",
 //           headers: {
