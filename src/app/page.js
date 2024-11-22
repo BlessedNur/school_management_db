@@ -147,7 +147,7 @@ function Home() {
             href={"/register"}
             className="text-blue-500 cursor-pointer pt-4"
           >
-            Don't have an account?
+            Don&apos;t have an account?
           </Link>
         </div>
         <div className="flex justify-center mt-8 gap-6">
