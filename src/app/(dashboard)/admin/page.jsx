@@ -8,6 +8,7 @@ import Students from "@/components/Students/Students";
 import Courses from "@/components/Courses/Courses";
 import Enrollments from "@/components/Enrollments/Enrollments";
 import { toast } from "sonner";
+import moment from "moment";
 
 function Page() {
   const [dateNow, setDateNow] = useState(new Date().toDateString());
@@ -39,18 +40,22 @@ function Page() {
   const [alreadyEnrolled, setAlreadyEnrolled] = useState([]);
   const [category, setCategory] = useState("");
   const [duration, setDuration] = useState("");
+  const [courseName, setCourseName] = useState("");
   const [students, setStudents] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
 
+  const length = "days";
   useEffect(() => {
     const getCourses = async () => {
       try {
         const response = await fetch(
-          "https://school-management-db-backend.onrender.com/api/courses/get_course",
+          "http://localhost:4000/api/courses/get_course",
           {
             method: "GET",
           }
@@ -74,7 +79,7 @@ function Page() {
       // setIsLoading(true);
       try {
         const response = await fetch(
-          "https://school-management-db-backend.onrender.com/api/users/get_users",
+          "http://localhost:4000/api/users/get_users",
           {
             method: "GET",
             headers: {
@@ -111,20 +116,17 @@ function Page() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/courses/enroll",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            courseId: selectedCourse,
-            studentIds: selectedStudents,
-            instructorIds: selectedInstructors,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:4000/api/courses/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          courseId: selectedCourse,
+          studentIds: selectedStudents,
+          instructorIds: selectedInstructors,
+        }),
+      });
 
       const data = await response.json();
 
@@ -190,21 +192,18 @@ function Page() {
       enrollmentDate: dateNow,
     });
     try {
-      const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/users/add_user",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name,
-            email: email,
-            role: role,
-            enrollmentDate: dateNow,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:4000/api/users/add_user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          role: role,
+          enrollmentDate: dateNow,
+        }),
+      });
       if (response.ok) {
         setName("");
         setEmail("");
@@ -223,21 +222,68 @@ function Page() {
       toast.error("error occured");
     }
   };
+  const updateCourse = async (e, id) => {
+    setIsLoading(true);
+    e.preventDefault();
+    console.log({
+      id: id,
+      name: selectedCourse.name,
+      category: selectedCourse.category,
+      startFrom: selectedCourse.startFrom,
+      endAt: selectedCourse.endAt,
+    });
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/courses/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: selectedCourse.name,
+            category: selectedCourse.category,
+            startFrom: selectedCourse.startFrom,
+            endAt: selectedCourse.endAt,
+          }),
+        }
+      );
+      if (response.ok) {
+        setDuration("");
+        setCategory("");
+        setIsLoading(false);
+        setPopUp((prev) => ({ ...prev, update_course_pop: false }));
+
+        toast.success("Course updated succesfully");
+      }
+      if (!response.ok) {
+        setIsLoading(false);
+        toast.error("An error occured");
+      }
+    } catch (err) {
+      setIsLoading(false);
+      toast.error("An error occured");
+      console.log(err);
+    }
+  };
+
   const addCourse = async (e) => {
     setIsLoading(true);
     e.preventDefault();
 
     try {
       const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/courses/add_course",
+        "http://localhost:4000/api/courses/add_course",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            name: courseName,
             category: category,
-            duration: duration,
+            startFrom: startDate,
+            endAt: endDate,
           }),
         }
       );
@@ -266,7 +312,7 @@ function Page() {
       localStorage.removeItem("user");
 
       setToken(null);
-      setCurrentUser(null);
+      setCurrentUser({});
 
       path.push("/");
     } catch (error) {
@@ -301,7 +347,7 @@ function Page() {
         } justify-between`}
       >
         <div>
-          <div className="flex gap-2 items-end  mb-8">
+          <div className="flex gap-2 items-center mb-8">
             <div className="w-10 h-10 rounded-full bg-gray-400 overflow-hidden">
               <img
                 src={
@@ -309,7 +355,10 @@ function Page() {
                 }
               />
             </div>{" "}
-            <h1 className="font-bold text-lg">Welcome, {currentUser}</h1>
+            <div>
+              <h1 className="font-bold text-lg">Welcome, {currentUser.name}</h1>
+              <span>{currentUser.role}</span>
+            </div>
           </div>
           <h1 className="text-lg font-semibold">Menu</h1>
           <ul className="flex flex-col gap-2">
@@ -347,6 +396,17 @@ function Page() {
             </li> */}
             <li
               className={`flex gap-2 items-center p-4 rounded-md cursor-pointer transition ${
+                active === "courses"
+                  ? "bg-[#f7f8fa] text-black"
+                  : "text-gray-600"
+              }`}
+              onClick={() => setActive("courses")}
+            >
+              <i className="fa fa-folder-open" aria-hidden="true"></i>
+              <p>Courses</p>
+            </li>
+            <li
+              className={`flex gap-2 items-center p-4 rounded-md cursor-pointer transition ${
                 active === "enroll"
                   ? "bg-[#f7f8fa] text-black"
                   : "text-gray-600"
@@ -354,7 +414,7 @@ function Page() {
               onClick={() => setActive("enroll")}
             >
               <i className="fa fa-folder-open" aria-hidden="true"></i>
-              <p>Course Enroll</p>
+              <p>Enroll Student</p>
             </li>
           </ul>
         </div>
@@ -403,8 +463,8 @@ function Page() {
           <h1 className="text-xl font-semibold">
             {active == "instructor" && "Instuctors"}
             {active == "student" && "Students"}
-            {active == "course" && "Courses"}
-            {active == "enroll" && "Course Enroll"}
+            {active == "courses" && "Courses"}
+            {active == "enroll" && "Enroll Student"}
           </h1>
           <div className="flex items-center gap-4">
             <div className="relative bg-[#f7f8fa]  p-2 rounded-md">
@@ -415,26 +475,19 @@ function Page() {
               />
               <i className="fa fa-search absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-500"></i>
             </div>
-            {(active === "instructor" || active === "student") && (
-              <div
-                className="  bg-[#f7f8fa] p-2 px-4 rounded-md cursor-pointer"
-                title="Add"
-                onClick={() => {
-                  setPopUp((prev) => ({ ...prev, user_pop: true }));
-                }}
-              >
-                Add User
-              </div>
-            )}
-            {active === "course" && (
-              <div
-                className="  bg-[#f7f8fa] p-2 px-4 rounded-md cursor-pointer"
-                title="Add"
-              >
-                Add Course
-              </div>
-            )}
-            {active === "enroll" && (
+            {(active === "instructor" || active === "student") &&
+              currentUser.role === "admin" && (
+                <div
+                  className="  bg-[#f7f8fa] p-2 px-4 rounded-md cursor-pointer"
+                  title="Add"
+                  onClick={() => {
+                    setPopUp((prev) => ({ ...prev, user_pop: true }));
+                  }}
+                >
+                  Add User
+                </div>
+              )}
+            {active === "courses" && currentUser.role != "student" && (
               <div
                 className="  bg-[#f7f8fa] p-2 px-4 rounded-md cursor-pointer"
                 title="Add"
@@ -450,7 +503,7 @@ function Page() {
 
         {active === "instructor" && <Instructors />}
         {active === "student" && <Students />}
-        {active === "course" && <Courses />}
+        {active === "courses" && <Courses />}
         {active === "enroll" && <Enrollments />}
 
         {popUp.user_pop && (
@@ -571,17 +624,36 @@ function Page() {
                         htmlFor="course-duration"
                         className="block text-gray-700 text-sm font-medium mb-1"
                       >
-                        Course Duration (months)
+                        Course Name
                       </label>
                       <input
-                        value={duration}
-                        onChange={(e) => setDuration(e.target.value)}
+                        value={courseName}
+                        onChange={(e) => setCourseName(e.target.value)}
                         id="course-duration"
-                        type="number"
-                        min="1"
-                        placeholder="e.g  6 (months)"
-                        className="w-full p-2 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        type="text"
+                        placeholder="e.g Backend"
+                        className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label htmlFor="supplier">Category</label>
+                      <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        id="course-category"
+                        className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="" disabled defaultValue={""}>
+                          select a course
+                        </option>
+                        <option value="Web development">Web Development</option>
+                        <option value="Cyber security">Cyber Security</option>
+                        <option value="Graphic design">Graphic Design</option>
+                        <option value="Digital marketing">
+                          Digital marketing
+                        </option>
+                      </select>
                     </div>
                   </div>
 
@@ -593,25 +665,310 @@ function Page() {
                   </button>
                 </div>
                 <div className="w-1/2 flex flex-col gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="supplier">Category</label>
-                    <select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      id="course-category"
-                      className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  <div>
+                    <label
+                      htmlFor="course-duration"
+                      className="block text-gray-700 text-sm font-medium mb-1"
                     >
-                      <option value="" disabled defaultValue={""}>select a course</option>
-                      <option value="Web development">Web Development</option>
-                      <option value="Cyber security">Cyber Security</option>
-                      <option value="Graphic design">Graphic Design</option>
-                      <option value="Digital marketing">
-                        Digital marketing
-                      </option>
-                    </select>
+                      Start Date
+                    </label>
+                    <input
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      id="course-duration"
+                      type="Date"
+                      min="1"
+                      placeholder=""
+                      className="w-full p-2 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="course-duration"
+                      className="block text-gray-700 text-sm font-medium mb-1"
+                    >
+                      End Date
+                    </label>
+                    <input
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      id="course-duration"
+                      type="Date"
+                      min="1"
+                      placeholder=""
+                      className="w-full p-2 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
                   </div>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+        {popUp.update_course_pop && (
+          <div className="backdrop-blur-sm fixed top-0 left-0 h-screen w-screen grid place-content-center  ">
+            <div
+              className="fixed right-5 top-5 "
+              onClick={() => {
+                setPopUp((prev) => ({ ...prev, update_course_pop: false }));
+              }}
+            >
+              <i
+                className="fa fa-times text-[25px] cursor-pointer"
+                aria-hidden="true"
+              ></i>
+            </div>
+
+            <div
+              className={`p-4  ${
+                darkMode ? "bg-gray-800" : "bg-white shadow-md"
+              } rounded-md`}
+            >
+              <h1 className="text-2xl font-semibold mb-4">Update a Course</h1>
+              <form className="flex gap-4">
+                <div className="w-1/2 flex flex-col gap-4">
+                  <div className="flex flex-col gap-1">
+                    <div>
+                      <label
+                        htmlFor="course-duration"
+                        className="block text-gray-700 text-sm font-medium mb-1"
+                      >
+                        Course Name
+                      </label>
+                      <input
+                        value={selectedCourse.name}
+                        onChange={(e) =>
+                          setSelectedCourse((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
+                        id="course-duration"
+                        type="text"
+                        placeholder="e.g Backend"
+                        className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label htmlFor="supplier">Category</label>
+                      <select
+                        value={selectedCourse.category}
+                        onChange={(e) =>
+                          setSelectedCourse((prev) => ({
+                            ...prev,
+                            category: e.target.value,
+                          }))
+                        }
+                        id="course-category"
+                        className="w-full bg-gray-100 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="" disabled defaultValue={""}>
+                          select a course
+                        </option>
+                        <option value="Web development">Web Development</option>
+                        <option value="Cyber security">Cyber Security</option>
+                        <option value="Graphic design">Graphic Design</option>
+                        <option value="Digital marketing">
+                          Digital marketing
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => updateCourse(event, selectedCourse._id)}
+                    className="p-4 bg-green-700 text-white rounded-sm"
+                  >
+                    {isLoading ? "Updating..." : "Update"}
+                  </button>
+                </div>
+                <div className="w-1/2 flex flex-col gap-4">
+                  <div>
+                    <label
+                      htmlFor="course-duration"
+                      className="block text-gray-700 text-sm font-medium mb-1"
+                    >
+                      Start Date
+                    </label>
+                    <input
+                      value={selectedCourse.startFrom}
+                      onChange={(e) =>
+                        setSelectedCourse((prev) => ({
+                          ...prev,
+                          startFrom: e.target.value,
+                        }))
+                      }
+                      id="course-duration"
+                      type="Date"
+                      min="1"
+                      placeholder=""
+                      className="w-full p-2 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="course-duration"
+                      className="block text-gray-700 text-sm font-medium mb-1"
+                    >
+                      End Date
+                    </label>
+                    <input
+                      value={selectedCourse.endAt}
+                      onChange={(e) =>
+                        setSelectedCourse((prev) => ({
+                          ...prev,
+                          endAt: e.target.value,
+                        }))
+                      }
+                      id="course-duration"
+                      type="Date"
+                      min="1"
+                      placeholder=""
+                      className="w-full p-2 bg-gray-100 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {popUp.course_view_pop && (
+          <div
+            className="fixed inset-0 z-10 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-50 transition-opacity"
+            aria-labelledby="enroll-modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full max-w-3xl p-6">
+              <button
+                onClick={() => {
+                  setPopUp((prev) => ({ ...prev, course_view_pop: false }));
+                }}
+                className="absolute top-4 right-4 rounded-full  p-2 focus:outline-none"
+                aria-label="Close"
+              >
+                <i className="fa fa-times" aria-hidden="true"></i>{" "}
+              </button>
+
+              <div className="space-y-6">
+                {/* Course Selection */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="course-select"
+                    className="text-sm font-medium text-gray-700"
+                  ></label>
+                  Course
+                  <div
+                    id="course-select"
+                    // onChange={(e) => setSelectedCourse(e.target.value)}
+                    className="w-full font-semibold rounded-md uppercase py-2 outline-none focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    {selectedCourse.name}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <label
+                        htmlFor="course-duration"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Duration
+                      </label>
+                      <div className="text-sm text-gray-700">
+                        {moment(selectedCourse.endAt).diff(
+                          selectedCourse.startFrom,
+                          length
+                        )}{" "}
+                        {length}
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="course-duration"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Category
+                      </label>
+                      <div className="text-sm text-gray-700">
+                        {selectedCourse.category}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full gap-6">
+                  <div className="space-y-2">
+                    <h3 className="text-md font-medium text-gray-800">
+                      Students
+                    </h3>
+                    <ul className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-3 bg-gray-50">
+                      {selectedCourse.enrolledStudents.map((student) => {
+                        return (
+                          <li
+                            key={student._id}
+                            className="flex items-center space-x-2"
+                          >
+                            <div className="text-sm capitalize text-gray-700">
+                              <ul className="flex flex-col gap-2">
+                                {students.filter((student) =>
+                                  selectedCourse.enrolledStudents.includes(
+                                    student._id
+                                  )
+                                ).length > 0 ? (
+                                  students
+                                    .filter((student) =>
+                                      selectedCourse.enrolledStudents.includes(
+                                        student._id
+                                      )
+                                    )
+                                    .map((student) => (
+                                      <li className="p-2" key={student._id}>
+                                        {student.name}
+                                      </li>
+                                    ))
+                                ) : (
+                                  <li>No Students assigned</li>
+                                )}
+                              </ul>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+
+                  {/* <div className="space-y-2">
+                    <h3 className="text-md font-medium text-gray-800">
+                      Instructors
+                    </h3>
+                    <ul className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-3 bg-gray-50">
+                      {instructors.map((instructor) => (
+                        <li
+                          key={instructor._id}
+                          className="flex items-center space-x-2"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedInstructors.includes(
+                              instructor._id
+                            )}
+                            onChange={() =>
+                              toggleSelection(
+                                instructor._id,
+                                selectedInstructors,
+                                setSelectedInstructors
+                              )
+                            }
+                            className="text-indigo-600 focus:ring-indigo-500"
+                          />
+                          <span className="text-sm text-gray-700">
+                            {instructor.name}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div> */}
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -638,7 +995,7 @@ function Page() {
                   id="enroll-modal-title"
                   className="text-xl font-semibold text-gray-900"
                 >
-                  Enroll Students and Instructors
+                  Enroll Students to a course
                 </h2>
 
                 {/* Course Selection */}
@@ -658,7 +1015,7 @@ function Page() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="w-full gap-6">
                   <div className="space-y-2">
                     <h3 className="text-md font-medium text-gray-800">
                       Students
@@ -689,7 +1046,7 @@ function Page() {
                     </ul>
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <h3 className="text-md font-medium text-gray-800">
                       Instructors
                     </h3>
@@ -719,7 +1076,7 @@ function Page() {
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex justify-end space-x-4 mt-4">

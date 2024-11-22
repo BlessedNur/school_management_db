@@ -33,7 +33,7 @@ function Students() {
   const getCourses = async () => {
     try {
       const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/courses/get_course",
+        "http://localhost:4000/api/courses/get_course",
         {
           method: "GET",
         }
@@ -52,12 +52,9 @@ function Students() {
   const getStudents = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/users/students",
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch("http://localhost:4000/api/users/students", {
+        method: "GET",
+      });
 
       if (!response.ok) {
         setIsLoading(false);
@@ -78,7 +75,7 @@ function Students() {
   const deleteStudent = async (id) => {
     try {
       const response = await fetch(
-        `https://school-management-db-backend.onrender.com/api/users/students/${id}`,
+        `http://localhost:4000/api/users/students/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -143,9 +140,11 @@ function Students() {
                   <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
                     Email
                   </th>
-                  <th className="p-3 w-full text-left border-b-[1px]">
-                    Actions
-                  </th>
+                  {currentUser.role === "admin" && (
+                    <th className="p-3 w-full text-left border-b-[1px]">
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -189,7 +188,7 @@ function Students() {
                       </td>
                       <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
                         <h2>
-                          {moment(student.enrollmentDate).format("MM/DD/YYYY")}
+                          {moment(student.enrollmentDate).format("MMM Do YY")}
                         </h2>
                         <p className="text-[10px] text-gray-400">
                           {moment(student.createdAt).fromNow()}{" "}
@@ -204,29 +203,31 @@ function Students() {
                       <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
                         {student.email}
                       </td>
-                      <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
-                        <div
-                          className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
-                          onClick={() => copyToClipboard(student._id)}
-                        >
-                          <i className="fa fa-copy" aria-hidden="true"></i>
-                          <p>Copy ID</p>
-                        </div>
+                      {currentUser.role === "admin" && (
+                        <td className="p-3 w-full flex  items-center gap-4 border-b-[1px]">
+                          <div
+                            className="flex  items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
+                            // onClick={() => copyToClipboard(student._id)}
+                          >
+                            <i className="fa fa-copy" aria-hidden="true"></i>
+                            <p>Update</p>
+                          </div>
 
-                        <div
-                          onClick={() => {
-                            setPopUp2((prev) => ({
-                              ...prev,
-                              delete_pop: true,
-                              studentId: student._id,
-                            }));
-                          }}
-                          className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
-                        >
-                          <i className="fa fa-trash" aria-hidden="true"></i>
-                          <p>Delete</p>
-                        </div>
-                      </td>
+                          <div
+                            onClick={() => {
+                              setPopUp2((prev) => ({
+                                ...prev,
+                                delete_pop: true,
+                                studentId: student._id,
+                              }));
+                            }}
+                            className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
+                          >
+                            <i className="fa fa-trash" aria-hidden="true"></i>
+                            <p>Delete</p>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}

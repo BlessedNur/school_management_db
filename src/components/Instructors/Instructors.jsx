@@ -28,7 +28,7 @@ function Instructors() {
   const getCourses = async () => {
     try {
       const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/courses/get_course",
+        "http://localhost:4000/api/courses/get_course",
         {
           method: "GET",
         }
@@ -50,7 +50,7 @@ function Instructors() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/users/instructors",
+        "http://localhost:4000/api/users/instructors",
         {
           method: "GET",
         }
@@ -88,7 +88,7 @@ function Instructors() {
   const deleteInstructor = async (id) => {
     try {
       const response = await fetch(
-        `https://school-management-db-backend.onrender.com/api/users/instructors/${id}`,
+        `http://localhost:4000/api/users/instructors/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -135,15 +135,17 @@ function Instructors() {
                   <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
                     Teacher ID
                   </th>
-                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                  {/* <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
                     Course
-                  </th>
+                  </th> */}
                   <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
                     Email
                   </th>
-                  <th className="p-3 w-full text-left border-b-[1px]">
-                    Actions
-                  </th>
+                  {currentUser.role === "admin" && (
+                    <th className="p-3 w-full text-left border-b-[1px]">
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -187,35 +189,37 @@ function Instructors() {
                       <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
                         {instructor._id}
                       </td>
-                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                      {/* <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
                         {instructorCourses.length > 0
                           ? instructorCourses.join(", ")
                           : "No courses assigned"}
-                      </td>
+                      </td> */}
                       <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
                         {instructor.email}
                       </td>
-                      <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
-                        <div
-                          className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
-                          onClick={() => copyToClipboard(instructor._id)}
-                        >
-                          <i className="fa fa-copy" aria-hidden="true"></i>
-                          <p>Copy ID</p>
-                        </div>
-                        <div
-                          className="flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white cursor-pointer"
-                          onClick={() =>
-                            setPopUp2({
-                              delete_pop: true,
-                              instructorId: instructor._id,
-                            })
-                          }
-                        >
-                          <i className="fa fa-trash" aria-hidden="true"></i>
-                          <p>Delete</p>
-                        </div>
-                      </td>
+                      {currentUser.role === "admin" && (
+                        <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
+                          <div
+                            className="flex items-center gap-2 whitespace-nowrap bg-cyan-700 p-2 rounded-md text-[10px] text-white cursor-pointer"
+                            onClick={() => copyToClipboard(instructor._id)}
+                          >
+                            <i className="fa fa-copy" aria-hidden="true"></i>
+                            <p>Copy ID</p>
+                          </div>
+                          <div
+                            className="flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white cursor-pointer"
+                            onClick={() =>
+                              setPopUp2({
+                                delete_pop: true,
+                                instructorId: instructor._id,
+                              })
+                            }
+                          >
+                            <i className="fa fa-trash" aria-hidden="true"></i>
+                            <p>Delete</p>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}

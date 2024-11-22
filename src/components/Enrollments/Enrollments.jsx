@@ -4,10 +4,11 @@ import React, { useContext, useEffect, useState } from "react";
 import Pagination from "../pagination/Pagination";
 import { toast } from "sonner";
 import DeleteAlert from "../deleteAlert/DeleteAlert";
+import moment from "moment";
 
 function Enrollments() {
   const [courseList, setCourseList] = useState([]);
-  const [instructors, setInstructors] = useState([]);
+  const [students, setStudents] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [popUp2, setPopUp2] = useState({
@@ -30,19 +31,19 @@ function Enrollments() {
     selectedCourseName,
     setSelectedCourseName,
   } = useContext(authProvider);
-
+  // const { duration, setDuration } = useState("");
   const getCourses = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/courses/get_course",
+        "http://localhost:4000/api/courses/get_course",
         {
           method: "GET",
         }
       );
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
         setIsLoading(false);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
       console.log("Courses Data:", data);
@@ -58,7 +59,7 @@ function Enrollments() {
   const getUsers = async () => {
     try {
       const response = await fetch(
-        "https://school-management-db-backend.onrender.com/api/users/get_users",
+        "http://localhost:4000/api/users/get_users",
         {
           method: "GET",
           headers: {
@@ -68,27 +69,24 @@ function Enrollments() {
       );
       const data = await response.json();
       if (response.ok) {
-        console.log("Instructors Data:", data.instructors);
-        setInstructors(data.instructors);
+        console.log("students Data:", data.students);
+        setStudents(data.students);
       } else {
-        console.error("Failed to fetch instructors data");
+        console.error("Failed to fetch students data");
       }
     } catch (error) {
-      console.error("Error fetching instructors:", error);
+      console.error("Error fetching students:", error);
     }
   };
 
   const deleteCourse = async (id) => {
     try {
-      const response = await fetch(
-        `https://school-management-db-backend.onrender.com/api/courses/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/api/courses/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.ok) {
         setCourseList((prevCourses) =>
           prevCourses.filter((course) => course._id !== id)
@@ -114,10 +112,10 @@ function Enrollments() {
   }, [popUp.course_pop]);
 
   useEffect(() => {
-    const enrolledInstructorIds = courseList.flatMap(
-      (item) => item.enrolledInstructors || []
+    const enrolledStudentsId = courseList.flatMap(
+      (item) => item.enrolledStudentsId || []
     );
-    setEnrolled(enrolledInstructorIds);
+    setEnrolled(enrolledStudentsId);
   }, [courseList]);
 
   return (
@@ -138,10 +136,13 @@ function Enrollments() {
               <thead>
                 <tr className="flex text-gray-500 justify-between ">
                   <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
+                    Course Name
+                  </th>
+                  <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
                     Course
                   </th>
                   <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
-                    Instructor(s)
+                    Students(s)
                   </th>
                   <th className="p-3 w-full text-left border-b-[1px] border-r-[1px]">
                     Duration
@@ -152,57 +153,72 @@ function Enrollments() {
                 </tr>
               </thead>
               <tbody>
-                {courseList.map((course, index) => (
-                  <tr key={index} className="flex justify-between">
-                    <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                      {course.category}
-                    </td>
-                    <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                      {instructors
-                        .filter((instructor) =>
-                          course.enrolledInstructors.includes(instructor._id)
-                        )
-                        .map((instructor) => instructor.name)
-                        .join(", ") || "No instructor assigned"}
-                    </td>
-                    <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
-                      {course.duration} Months
-                    </td>
+                {courseList.map((course, index) => {
+                  const endDate = course.endAt;
+                  const length = "days";
+                  const durationDate = moment(endDate).diff(
+                    course.startFrom,
+                    length
+                  );
+                  return (
+                    <tr key={index} className="flex justify-between">
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {course.name}
+                      </td>
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {course.category}
+                      </td>
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {students
+                          .filter((student) =>
+                            course.enrolledStudents.includes(student._id)
+                          )
+                          .map((student) => student.name)
+                          .join(", ") || "No Students assigned"}
+                      </td>
+                      <td className="flex flex-col justify-center p-3 w-full border-b-[1px] border-r-[1px] overflow-hidden">
+                        {durationDate} {length}
+                      </td>
 
-                    <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
-                      <div
-                        className="cursor-pointer flex items-center gap-2 bg-cyan-700 p-2 rounded-md text-[10px] text-white"
-                        onClick={() => {
-                          setPopUp((prev) => ({ ...prev, enroll_pop: true }));
-                          setSelectedCourse(course._id);
-                          setSelectedCourseName(course.category);
-                        }}
-                      >
-                        <i className="fa fa-plus" aria-hidden="true"></i>
-                        <p>Enroll</p>
-                      </div>
-                      {popUp2.delete_pop && popUp2.courseId === course._id && (
-                        <DeleteAlert
-                          function_call={deleteCourse}
-                          id={course._id}
-                          role={"course"}
-                          user={course.category}
-                          setPopup={setPopUp2}
-                          delete_pop={popUp2.delete_pop}
-                        />
-                      )}
-                      <div
-                        onClick={() =>
-                          setPopUp2({ delete_pop: true, courseId: course._id })
-                        }
-                        className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
-                      >
-                        <i className="fa fa-trash" aria-hidden="true"></i>
-                        <p>Delete</p>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="p-3 w-full flex items-center gap-4 border-b-[1px]">
+                        <div
+                          className="cursor-pointer flex items-center gap-2 bg-cyan-700 p-2 rounded-md text-[10px] text-white"
+                          onClick={() => {
+                            setPopUp((prev) => ({ ...prev, enroll_pop: true }));
+                            setSelectedCourse(course._id);
+                            setSelectedCourseName(course.category);
+                            setActive("student");
+                          }}
+                        >
+                          <p>Enroll Student</p>
+                        </div>
+                        {popUp2.delete_pop &&
+                          popUp2.courseId === course._id && (
+                            <DeleteAlert
+                              function_call={deleteCourse}
+                              id={course._id}
+                              role={"course"}
+                              user={course.category}
+                              setPopup={setPopUp2}
+                              delete_pop={popUp2.delete_pop}
+                            />
+                          )}
+                        <div
+                          onClick={() =>
+                            setPopUp2({
+                              delete_pop: true,
+                              courseId: course._id,
+                            })
+                          }
+                          className="cursor-pointer flex items-center gap-2 bg-red-600 p-2 rounded-md text-[10px] text-white"
+                        >
+                          <i className="fa fa-trash" aria-hidden="true"></i>
+                          <p>Delete</p>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}

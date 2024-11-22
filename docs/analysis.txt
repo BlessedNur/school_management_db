@@ -1,0 +1,9 @@
+1- User to admin
+=> only one user can be an admin
+
+2 -User to student(one to many)
+=>  one many students can  be users while a user can be a student , instructor , admin
+3 -User to Instructor (one to many)
+=>  one many instructors can  be users while a user can be a student , instructor , admin
+4 - student to courses (many to many)
+=> student can enroll to many courses and a course can have many students
