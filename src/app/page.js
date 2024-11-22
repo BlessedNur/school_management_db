@@ -32,11 +32,11 @@ function Home() {
     setToken(storedToken);
   }, []);
 
-  // useEffect(() => {
-  //   if (isMounted && token) {
-  //     path.push("/admin");
-  //   }
-  // }, [isMounted, token, path]);
+  useEffect(() => {
+    if (isMounted && token) {
+      path.push("/admin");
+    }
+  }, [isMounted, token, path]);
 
   const handleSubmit = async (e) => {
     setIsLoading(true);
