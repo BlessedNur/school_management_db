@@ -907,30 +907,24 @@ function Page() {
                       Students
                     </h3>
                     <ul className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-3 bg-gray-50">
-                      {selectedCourse.enrolledStudents.map((student) => {
-                        return (
-                          <li
-                            key={student._id}
-                            className="flex items-center space-x-2"
-                          >
-                            <div className="text-sm capitalize text-gray-700">
-                              <ul className="flex flex-col gap-2">
-                                {students
-                                  .filter((student) =>
-                                    selectedCourse.enrolledStudents.includes(
-                                      student._id
-                                    )
-                                  )
-                                  .map((student) => (
-                                    <li className="p-2" key={student._id}>
-                                      {student.name}
-                                    </li>
-                                  ))}
-                              </ul>
-                            </div>
-                          </li>
-                        );
-                      })}
+                      <ul className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-3 bg-gray-50">
+                        {students
+                          .filter((student) =>
+                            selectedCourse.enrolledStudents.includes(
+                              student._id
+                            )
+                          )
+                          .map((student) => (
+                            <li
+                              key={student._id}
+                              className="flex items-center space-x-2"
+                            >
+                              <div className="text-sm capitalize text-gray-700">
+                                {student.name}
+                              </div>
+                            </li>
+                          ))}
+                      </ul>
                     </ul>
                   </div>
 
