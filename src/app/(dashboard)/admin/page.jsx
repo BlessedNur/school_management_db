@@ -906,7 +906,6 @@ function Page() {
                     <h3 className="text-md font-medium text-gray-800">
                       Students
                     </h3>
-                    <ul className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-3 bg-gray-50">
                       <ul className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-3 bg-gray-50">
                         {students
                           .filter((student) =>
@@ -925,7 +924,6 @@ function Page() {
                             </li>
                           ))}
                       </ul>
-                    </ul>
                   </div>
 
                   {/* <div className="space-y-2">
